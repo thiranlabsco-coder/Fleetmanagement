@@ -398,26 +398,37 @@ export class SettingsComponent implements OnDestroy {
 
   settingsList : any;
   getSavedData(){
-    this.apiService.list(`Settings/${this.tenantId}/getSettings`).pipe(takeUntil(this.unsubscribe$)).subscribe({
+    const activeTenantId = this.tenantId || this.localStorageData?.tenantId;
+    if (!activeTenantId) {
+      this.saveButton = true;
+      this.updateButton = false;
+      return;
+    }
+    this.apiService.list(`Settings/${activeTenantId}/getSettings`).pipe(takeUntil(this.unsubscribe$)).subscribe({
       next: (response: any) => {
-        if(response.data){
+        const data = response?.data ?? (response?.filePath ? response : null);
+        if (data) {
           this.updateButton = true;
           this.saveButton = false;
-          this.settingsList = response.data;
-          console.log('Settings GET Response:', response);
+          this.settingsList = data;
 
           // Patch the saved logo into the preview
-          if (response.data?.filePath) {
-            const imageUrl = `${this.serverBaseUrl}/${response.data.filePath}`;
+          if (data?.filePath) {
+            const imageUrl = `${this.serverBaseUrl}/${data.filePath}`;
             this.savedImageUrl = imageUrl;
             this.previewUrl = imageUrl;
-            this.cdr.detectChanges();
           }
         } else {
-          // No saved settings — show Save button
           this.saveButton = true;
           this.updateButton = false;
         }
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        // 404 or no saved logo yet — show Save button
+        this.saveButton = true;
+        this.updateButton = false;
+        this.cdr.detectChanges();
       }
     });
   }

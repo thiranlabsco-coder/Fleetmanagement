@@ -280,6 +280,9 @@
           <label>Role <span class="required">*</span></label>
           <select formControlName="role" (change)="onRoleChange()" [class.is-invalid]="isFieldInvalid('role')">
             <option [ngValue]="null" disabled hidden>Select Role</option>
+            @if (form.get('role')?.value === 1) {
+            <option [ngValue]="1">Super Admin</option>
+            }
             @for (r of roleList; track r.id) {
             <option [ngValue]="r.id">{{ r.roleName }} </option>
             }

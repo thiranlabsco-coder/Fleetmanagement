@@ -251,6 +251,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
     this.isUpdateButton = false;
     this.editingId.set(null);
     this.form.reset({ role: null, isActive: true, aadhaarNumber: '', drivingLicence: '' });
+    this.form.get('role')?.enable({ emitEvent: false });
     this.form.get('password')?.setValidators([Validators.required, ...this.passwordValidators]);
     this.form.get('password')?.updateValueAndValidity();
     this.updateRoleValidators();
@@ -272,6 +273,12 @@ export class UsersComponent implements OnInit, AfterViewInit {
       aadhaarNumber: user.aadharCardNum ? user.aadharCardNum : null,
       drivingLicence: user.drivingLicenceNum ? user.drivingLicenceNum : null
     });
+    // Super Admin role is fixed: show it read-only; otherwise keep the dropdown active
+    if (user.role === 1) {
+      this.form.get('role')?.disable({ emitEvent: false });
+    } else {
+      this.form.get('role')?.enable({ emitEvent: false });
+    }
     this.updateRoleValidators();
     this.showForm.set(true);
   }

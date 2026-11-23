@@ -21,7 +21,7 @@ export interface Menu {
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
-  private apiUrl = 'https://localhost:7236/api/Menu';
+  private apiUrl = `${environment.apiUrl}/Menu`;
   constructor(private http: HttpClient) {}
   
   getAllRoles(): Observable<any> {

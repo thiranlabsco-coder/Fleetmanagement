@@ -33,9 +33,12 @@ namespace FleetPro.API.Controllers
         }
 
         [HttpPost("SaveUser")]
-        public async Task<UserDetailsDto> newUser(Guid tenantId, UserDetailsDto user)
+        public async Task<IActionResult> newUser(Guid tenantId, UserDetailsDto user)
         {
-            return await userRepository.saveUser(tenantId, user);
+            if (user.role == 1)
+                return BadRequest(new { success = false, message = "The Super Admin role cannot be assigned." });
+
+            return Ok(await userRepository.saveUser(tenantId, user));
         }
 
         [HttpPut("EditUser/{id}")]

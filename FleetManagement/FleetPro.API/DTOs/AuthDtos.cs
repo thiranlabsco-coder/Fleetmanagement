@@ -61,7 +61,8 @@ public record DashboardSummaryDto(
     decimal TotalDieselLitres,
     decimal AverageMileage,
     List<FinancialTrendPointDto> FinancialTrend,
-    List<ProfitDistributionDto> ProfitDistribution);
+    List<ProfitDistributionDto> ProfitDistribution,
+    List<VehicleSummaryDto> VehicleSummaries);
 
 public record FinancialTrendPointDto(string Label, decimal Spend, decimal Returns, decimal Profit);
 

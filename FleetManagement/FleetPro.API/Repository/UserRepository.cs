@@ -101,6 +101,12 @@ namespace FleetPro.API.Repository
                     return "User Not Found.";
                }
                else{
+               // Super Admin role (id 1) is fixed: it cannot be changed or assigned.
+               if (userData.role == 1 && user.role != 1)
+                    return "The Super Admin role cannot be changed.";
+               if (userData.role != 1 && user.role == 1)
+                    return "The Super Admin role cannot be assigned.";
+
                userData.username = user.username;
                userData.fullName = user.fullName;
                userData.emailId = user.emailId;

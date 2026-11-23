@@ -174,6 +174,23 @@ namespace FleetPro.API.Repository.TenantServ
                 };
                 //Insert Admin User
                 await _tenantService.CreateUserAsync(adminUser);
+
+                // Auto-assign default sidebar menus for the new tenant
+                var defaultMenus = request.IsSuperAdmin == "no"
+                    ? new List<RoleMenu>
+                    {
+                        new RoleMenu { RoleId = 2, MenuId = "1,2,3,4,5,6,7,8,9,11", TenantId = tenant.TenantId },
+                        new RoleMenu { RoleId = 3, MenuId = "1,2,3,5,7,8,9", TenantId = tenant.TenantId },
+                        new RoleMenu { RoleId = 4, MenuId = "2,5", TenantId = tenant.TenantId }
+                    }
+                    : new List<RoleMenu>
+                    {
+                        new RoleMenu { RoleId = 1, MenuId = "10,6", TenantId = tenant.TenantId }
+                    };
+
+                await context.RoleMenus.AddRangeAsync(defaultMenus);
+                await context.SaveChangesAsync();
+
                 await transaction.CommitAsync();
 
                 var responseData = new
